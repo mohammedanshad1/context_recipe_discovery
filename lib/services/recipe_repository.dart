@@ -29,8 +29,10 @@ class RecipeRepository {
     final lowerQuery = query.toLowerCase();
     return _recipes.where((recipe) {
       return recipe.name.toLowerCase().contains(lowerQuery) ||
-          recipe.description.toLowerCase().contains(lowerQuery) ||
-          recipe.tags.any((tag) => tag.toLowerCase().contains(lowerQuery));
+          recipe.category.toLowerCase().contains(lowerQuery) ||
+          recipe.area.toLowerCase().contains(lowerQuery) ||
+          recipe.instructions.toLowerCase().contains(lowerQuery) ||
+          recipe.ingredients.any((ingredient) => ingredient.toLowerCase().contains(lowerQuery));
     }).toList();
   }
 

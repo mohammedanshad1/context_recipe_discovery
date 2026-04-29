@@ -4,7 +4,8 @@ List<Recipe> mockRecipes = [
   Recipe(
     id: '1',
     name: 'Spaghetti Carbonara',
-    description: 'A classic Italian pasta dish with eggs, cheese, and pancetta.',
+    category: 'Pasta',
+    area: 'Italian',
     ingredients: [
       '200g spaghetti',
       '100g pancetta',
@@ -13,47 +14,52 @@ List<Recipe> mockRecipes = [
       'Black pepper',
       'Salt'
     ],
-    instructions: [
-      'Cook spaghetti in salted boiling water until al dente.',
-      'Fry pancetta until crispy.',
-      'Whisk eggs with cheese and pepper.',
-      'Drain pasta, mix with pancetta, then add egg mixture off heat.',
-      'Serve immediately.'
+    measures: [
+      '',
+      '',
+      '',
+      '',
+      '',
+      ''
     ],
-    imageUrl: 'https://example.com/spaghetti.jpg',
-    tags: ['Italian', 'Pasta', 'Quick'],
-    prepTime: 10,
-    cookTime: 15,
-    servings: 2,
+    instructions: 'Cook spaghetti in salted boiling water until al dente. Fry pancetta until crispy. Whisk eggs with cheese and pepper. Drain pasta, mix with pancetta, then add egg mixture off heat. Serve immediately.',
+    imageUrl: 'https://www.themealdb.com/images/media/meals/llcbn01574260722.jpg',
+    youtubeUrl: 'https://www.youtube.com/watch?v=8o9C_AF4rKQ',
+    sourceUrl: 'https://www.bbcgoodfood.com/recipes/ultimate-spaghetti-carbonara-recipe',
   ),
   Recipe(
     id: '2',
     name: 'Chicken Stir Fry',
-    description: 'Quick and healthy stir-fried chicken with vegetables.',
+    category: 'Chicken',
+    area: 'Chinese',
     ingredients: [
       '300g chicken breast',
       '2 bell peppers',
       '1 broccoli head',
       '2 tbsp soy sauce',
       '1 tbsp oil',
-      'Garlic and ginger'
+      'Garlic',
+      'Ginger'
     ],
-    instructions: [
-      'Cut chicken and vegetables.',
-      'Heat oil, cook chicken until done.',
-      'Add vegetables, stir fry.',
-      'Add soy sauce, serve with rice.'
+    measures: [
+      '',
+      '',
+      '',
+      '',
+      '',
+      '2 cloves',
+      '1 inch'
     ],
-    imageUrl: 'https://example.com/stirfry.jpg',
-    tags: ['Healthy', 'Asian', 'Quick'],
-    prepTime: 15,
-    cookTime: 10,
-    servings: 2,
+    instructions: 'Cut chicken and vegetables. Heat oil, cook chicken until done. Add vegetables, stir fry. Add soy sauce, serve with rice.',
+    imageUrl: 'https://www.themealdb.com/images/media/meals/wvpsxx1468256321.jpg',
+    youtubeUrl: null,
+    sourceUrl: null,
   ),
   Recipe(
     id: '3',
     name: 'Chocolate Chip Cookies',
-    description: 'Classic homemade cookies that are soft and chewy.',
+    category: 'Dessert',
+    area: 'American',
     ingredients: [
       '1 cup butter',
       '1 cup sugar',
@@ -63,16 +69,18 @@ List<Recipe> mockRecipes = [
       '1 tsp vanilla',
       '2 cups chocolate chips'
     ],
-    instructions: [
-      'Cream butter and sugars.',
-      'Add eggs and vanilla.',
-      'Mix in flour, then chocolate chips.',
-      'Bake at 350°F for 10-12 minutes.'
+    measures: [
+      'softened',
+      '',
+      '',
+      '',
+      '',
+      '',
+      ''
     ],
-    imageUrl: 'https://example.com/cookies.jpg',
-    tags: ['Dessert', 'Baking', 'Comfort'],
-    prepTime: 20,
-    cookTime: 12,
-    servings: 24,
+    instructions: 'Cream butter and sugars. Add eggs and vanilla. Mix in flour, then chocolate chips. Bake at 350°F for 10-12 minutes.',
+    imageUrl: 'https://www.themealdb.com/images/media/meals/1548771604304.jpg',
+    youtubeUrl: null,
+    sourceUrl: null,
   ),
 ];
