@@ -25,7 +25,7 @@ class ApiService {
       if (meals != null) {
         return meals.map((meal) => Recipe.fromJson(meal)).toList();
       }
-    }
+    } 
     return [];
   }
 
