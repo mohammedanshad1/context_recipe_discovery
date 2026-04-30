@@ -1,3 +1,5 @@
+// lib/screens/home_screen.dart
+import 'package:context_recipe_discovery/screens/favorite_screen.dart';
 import 'package:context_recipe_discovery/widgets/skelton_loader.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -35,7 +37,6 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   Future<void> _initializeData() async {
-    // Use data from splash screen if available
     if (widget.initialArea != null) {
       _currentArea = widget.initialArea;
     } else {
@@ -48,7 +49,6 @@ class _HomeScreenState extends State<HomeScreen> {
       _suggestBasedOnTime();
     }
     
-    // Load initial recipes
     _loadRecipes();
     
     setState(() {
@@ -113,7 +113,7 @@ class _HomeScreenState extends State<HomeScreen> {
     } else if (_currentArea != null) {
       bloc.add(LoadRecipes(area: _currentArea));
     } else {
-      bloc.add( LoadRecipes());
+      bloc.add(LoadRecipes());
     }
   }
 
@@ -125,6 +125,15 @@ class _HomeScreenState extends State<HomeScreen> {
     }
   }
 
+  void _navigateToFavorites() {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => const FavoritesScreen(),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -134,9 +143,7 @@ class _HomeScreenState extends State<HomeScreen> {
         actions: [
           IconButton(
             icon: const Icon(Icons.favorite),
-            onPressed: () {
-              context.read<RecipeBloc>().add( LoadFavorites());
-            },
+            onPressed: _navigateToFavorites,
           ),
         ],
       ),
@@ -203,13 +210,9 @@ class _HomeScreenState extends State<HomeScreen> {
           Expanded(
             child: BlocBuilder<RecipeBloc, RecipeState>(
               builder: (context, state) {
-                // Show skeleton loader while loading
                 if (state is RecipeLoading) {
                   return const SkeletonLoader();
-                }
-                
-                // Show loaded recipes
-                if (state is RecipeLoaded) {
+                } else if (state is RecipeLoaded) {
                   if (state.recipes.isEmpty) {
                     return Center(
                       child: Column(
@@ -236,26 +239,32 @@ class _HomeScreenState extends State<HomeScreen> {
                     );
                   }
                   
-                  return ListView.builder(
-                    itemCount: state.recipes.length,
-                    itemBuilder: (context, index) {
-                      return RecipeCard(
-                        recipe: state.recipes[index],
-                        onTap: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => RecipeDetailScreen(recipe: state.recipes[index]),
-                            ),
-                          );
-                        },
-                      );
+                  return RefreshIndicator(
+                    onRefresh: () async {
+                      _loadRecipes();
                     },
+                    child: ListView.builder(
+                      itemCount: state.recipes.length,
+                      itemBuilder: (context, index) {
+                        return RecipeCard(
+                          recipe: state.recipes[index],
+                          onTap: () async {
+                            await Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => RecipeDetailScreen(
+                                  recipe: state.recipes[index],
+                                ),
+                              ),
+                            );
+                            // Refresh data when coming back from detail screen
+                            _loadRecipes();
+                          },
+                        );
+                      },
+                    ),
                   );
-                }
-                
-                // Show error state
-                if (state is RecipeError) {
+                } else if (state is RecipeError) {
                   return Center(
                     child: Padding(
                       padding: const EdgeInsets.all(24.0),
@@ -272,7 +281,7 @@ class _HomeScreenState extends State<HomeScreen> {
                           const SizedBox(height: 24),
                           ElevatedButton.icon(
                             onPressed: () {
-                              context.read<RecipeBloc>().add( LoadCachedRecipes());
+                              context.read<RecipeBloc>().add(LoadCachedRecipes());
                             },
                             icon: const Icon(Icons.folder),
                             label: const Text('Load Saved Recipes'),
@@ -289,7 +298,6 @@ class _HomeScreenState extends State<HomeScreen> {
                   );
                 }
                 
-                // Default - show skeleton
                 return const SkeletonLoader();
               },
             ),

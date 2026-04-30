@@ -1,3 +1,4 @@
+// lib/bloc/recipe_bloc.dart
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../models/recipe.dart';
 import '../services/api_service.dart';
@@ -77,11 +78,9 @@ class RecipeBloc extends Bloc<RecipeEvent, RecipeState> {
       } else if (event.area != null) {
         recipes = await _apiService.fetchRecipesByArea(event.area!);
       } else {
-        // Load random or default recipes
-        recipes = await _apiService.searchRecipes('chicken'); // Default
+        recipes = await _apiService.searchRecipes('chicken');
       }
 
-      // Mark favorites
       final favorites = await _localStorage.getFavorites();
       recipes = recipes.map((recipe) {
         return recipe.copyWith(isFavorite: favorites.containsKey(recipe.id));
@@ -89,7 +88,6 @@ class RecipeBloc extends Bloc<RecipeEvent, RecipeState> {
 
       emit(RecipeLoaded(recipes));
     } catch (e) {
-      // Try to load cached recipes if API fails
       final cached = await _localStorage.getCachedRecipes();
       if (cached.isNotEmpty) {
         emit(RecipeLoaded(cached.values.toList()));
@@ -112,7 +110,6 @@ class RecipeBloc extends Bloc<RecipeEvent, RecipeState> {
         emit(RecipeError('Recipe not found'));
       }
     } catch (e) {
-      // Try cached
       final cached = await _localStorage.getCachedRecipes();
       final recipe = cached[event.recipeId];
       if (recipe != null) {
@@ -123,16 +120,35 @@ class RecipeBloc extends Bloc<RecipeEvent, RecipeState> {
     }
   }
 
-  Future<void> _onToggleFavorite(ToggleFavorite event, Emitter<RecipeState> emit) async {
-    if (event.recipe.isFavorite) {
-      await _localStorage.removeFavorite(event.recipe.id);
-    } else {
-      await _localStorage.saveFavorite(event.recipe);
-    }
-    final updatedRecipe = event.recipe.copyWith(isFavorite: !event.recipe.isFavorite);
+ // lib/bloc/recipe_bloc.dart (Update the _onToggleFavorite method)
+Future<void> _onToggleFavorite(ToggleFavorite event, Emitter<RecipeState> emit) async {
+  final newFavoriteStatus = !event.recipe.isFavorite;
+  
+  if (newFavoriteStatus) {
+    await _localStorage.saveFavorite(event.recipe);
+  } else {
+    await _localStorage.removeFavorite(event.recipe.id);
+  }
+  
+  final updatedRecipe = event.recipe.copyWith(isFavorite: newFavoriteStatus);
+  
+  // Update RecipeDetailsLoaded state if it exists
+  if (state is RecipeDetailsLoaded) {
     emit(RecipeDetailsLoaded(updatedRecipe));
   }
-
+  
+  // Update RecipeLoaded state if it exists
+  if (state is RecipeLoaded) {
+    final currentState = state as RecipeLoaded;
+    final updatedRecipes = currentState.recipes.map((recipe) {
+      if (recipe.id == updatedRecipe.id) {
+        return updatedRecipe;
+      }
+      return recipe;
+    }).toList();
+    emit(RecipeLoaded(updatedRecipes));
+  }
+}
   Future<void> _onLoadFavorites(LoadFavorites event, Emitter<RecipeState> emit) async {
     emit(RecipeLoading());
     try {
