@@ -229,11 +229,11 @@ class _HomeScreenState extends State<HomeScreen> {
                             'Try a different search',
                             style: TextStyle(color: Colors.grey[500]),
                           ),
-                          const SizedBox(height: 16),
-                          ElevatedButton(
-                            onPressed: _loadRecipes,
-                            child: const Text('Refresh'),
-                          ),
+                          // const SizedBox(height: 16),
+                          // ElevatedButton(
+                          //   onPressed: _loadRecipes,
+                          //   child: const Text('Refresh'),
+                          // ),
                         ],
                       ),
                     );
