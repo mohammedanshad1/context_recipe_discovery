@@ -150,10 +150,11 @@ class _RecipeDetailScreenState extends State<RecipeDetailScreen> {
                 onPressed: () {
                   // Share recipe functionality
                   ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(
+                     SnackBar(
                       content: Text('Share feature coming soon!'),
-                      duration: Duration(seconds: 1),
-                    ),
+duration:  Duration(seconds: 2),
+        behavior: SnackBarBehavior.floating,
+        backgroundColor: Colors.orange[700],                    ),
                   );
                 },
               ),
@@ -372,22 +373,42 @@ class _RecipeDetailScreenState extends State<RecipeDetailScreen> {
                                 ),
                               ),
                               const SizedBox(height: 12),
-                              if (_currentRecipe.youtubeUrl != null)
-                                _buildExternalLinkButton(
-                                  icon: Icons.play_circle_filled,
-                                  label: 'Watch on YouTube',
-                                  color: Colors.red,
-                                  onPressed: () => _launchUrl(_currentRecipe.youtubeUrl!),
-                                ),
+                            // Watch on YouTube button
+if (_currentRecipe.youtubeUrl != null)
+  _buildExternalLinkButton(
+    icon: Icons.play_circle_filled,
+    label: 'Watch on YouTube',
+    color: Colors.red,
+    onPressed: () {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: const Text('YouTube feature coming soon!'),
+          duration: const Duration(seconds: 2),
+          behavior: SnackBarBehavior.floating,
+          backgroundColor: Colors.orange[700],
+        ),
+      );
+    },
+  ),
                               if (_currentRecipe.sourceUrl != null)
                                 const SizedBox(height: 8),
-                              if (_currentRecipe.sourceUrl != null)
-                                _buildExternalLinkButton(
-                                  icon: Icons.link,
-                                  label: 'View Original Source',
-                                  color: Colors.blue,
-                                  onPressed: () => _launchUrl(_currentRecipe.sourceUrl!),
-                                ),
+                          // View Original Source button
+if (_currentRecipe.sourceUrl != null)
+  _buildExternalLinkButton(
+    icon: Icons.link,
+    label: 'View Original Source',
+    color: Colors.blue,
+    onPressed: () {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: const Text('Source feature coming soon!'),
+          duration: const Duration(seconds: 2),
+          behavior: SnackBarBehavior.floating,
+          backgroundColor: Colors.orange[700],
+        ),
+      );
+    },
+  ),
                             ],
                           ),
                         ),
