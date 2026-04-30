@@ -4,12 +4,6 @@ A smart Flutter recipe discovery app that suggests meals based on your **locatio
 
 ---
 
-## 📱 Screenshots
-
-> _Add screenshots here after building the APK_
-
----
-
 ## ✨ Features
 
 - 📍 **Location-aware suggestions** — detects your country and recommends regional cuisine
