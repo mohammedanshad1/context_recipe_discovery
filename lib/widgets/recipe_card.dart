@@ -33,15 +33,15 @@ class RecipeCard extends StatelessWidget {
         ),
         duration: const Duration(seconds: 2),
         behavior: SnackBarBehavior.floating,
-        backgroundColor: isAdding ? Colors.green[700] : Colors.grey[800],
-        action: SnackBarAction(
-          label: 'UNDO',
-          textColor: Colors.white,
-          onPressed: () {
-            // Undo favorite action
-            context.read<RecipeBloc>().add(ToggleFavorite(recipe));
-          },
-        ),
+        backgroundColor: isAdding ? Colors.green[700] : Colors.red[800],
+        // action: SnackBarAction(
+        //   label: 'UNDO',
+        //   textColor: Colors.white,
+        //   onPressed: () {
+        //     // Undo favorite action
+        //     context.read<RecipeBloc>().add(ToggleFavorite(recipe));
+        //   },
+        // ),
       ),
     );
   }

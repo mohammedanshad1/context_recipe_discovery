@@ -52,20 +52,20 @@ class _RecipeDetailScreenState extends State<RecipeDetailScreen> {
         ),
         duration: const Duration(seconds: 2),
         behavior: SnackBarBehavior.floating,
-        backgroundColor: isAdding ? Colors.green[700] : Colors.grey[800],
-        action: SnackBarAction(
-          label: 'UNDO',
-          textColor: Colors.white,
-          onPressed: () {
-            // Undo favorite action
-            final undoAdding = !isAdding;
-            context.read<RecipeBloc>().add(ToggleFavorite(_currentRecipe));
-            setState(() {
-              _currentRecipe = _currentRecipe.copyWith(isFavorite: undoAdding);
-            });
-            ScaffoldMessenger.of(context).hideCurrentSnackBar();
-          },
-        ),
+        backgroundColor: isAdding ? Colors.green[700] : Colors.red[800],
+        // action: SnackBarAction(
+        //   label: 'UNDO',
+        //   textColor: Colors.white,
+        //   onPressed: () {
+        //     // Undo favorite action
+        //     final undoAdding = !isAdding;
+        //     context.read<RecipeBloc>().add(ToggleFavorite(_currentRecipe));
+        //     setState(() {
+        //       _currentRecipe = _currentRecipe.copyWith(isFavorite: undoAdding);
+        //     });
+        //     ScaffoldMessenger.of(context).hideCurrentSnackBar();
+        //   },
+        // ),
       ),
     );
   }
