@@ -9,39 +9,37 @@ import '../models/recipe.dart';
 class RecipeCard extends StatelessWidget {
   final Recipe recipe;
   final VoidCallback onTap;
+  final VoidCallback? onFavoriteToggle; // optional override for favorites screen
 
   const RecipeCard({
     super.key,
     required this.recipe,
     required this.onTap,
+    this.onFavoriteToggle, // no breaking change — existing calls still work
   });
 
   void _toggleFavorite(BuildContext context) {
+    // If favorites screen passed its own handler, use that instead
+    if (onFavoriteToggle != null) {
+      onFavoriteToggle!();
+      return;
+    }
+
     final isAdding = !recipe.isFavorite;
-    
-    // Update favorite
+
     context.read<RecipeBloc>().add(ToggleFavorite(recipe));
-    
-    // Show snackbar feedback
+
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         content: Text(
-          isAdding 
-            ? '${recipe.name} added to favorites ✨'
-            : '${recipe.name} removed from favorites',
+          isAdding
+              ? '${recipe.name} added to favorites ✨'
+              : '${recipe.name} removed from favorites',
           style: const TextStyle(fontSize: 14),
         ),
         duration: const Duration(seconds: 2),
         behavior: SnackBarBehavior.floating,
         backgroundColor: isAdding ? Colors.green[700] : Colors.red[800],
-        // action: SnackBarAction(
-        //   label: 'UNDO',
-        //   textColor: Colors.white,
-        //   onPressed: () {
-        //     // Undo favorite action
-        //     context.read<RecipeBloc>().add(ToggleFavorite(recipe));
-        //   },
-        // ),
       ),
     );
   }
@@ -98,48 +96,17 @@ class RecipeCard extends StatelessWidget {
                     ),
                     child: IconButton(
                       icon: Icon(
-                        recipe.isFavorite ? Icons.favorite : Icons.favorite_border,
-                        color: recipe.isFavorite ? Colors.red : Colors.grey[700],
+                        recipe.isFavorite
+                            ? Icons.favorite
+                            : Icons.favorite_border,
+                        color:
+                            recipe.isFavorite ? Colors.red : Colors.grey[700],
                         size: 22,
                       ),
                       onPressed: () => _toggleFavorite(context),
                     ),
                   ),
                 ),
-                // Category badge (removed black circle, using better styling)
-                // Positioned(
-                //   bottom: 8,
-                //   left: 8,
-                //   child: Container(
-                //     padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-                //     decoration: BoxDecoration(
-                //       gradient: LinearGradient(
-                //         begin: Alignment.topLeft,
-                //         end: Alignment.bottomRight,
-                //         colors: [
-                //           Colors.deepPurple.shade700,
-                //           Colors.deepPurple.shade900,
-                //         ],
-                //       ),
-                //       borderRadius: BorderRadius.circular(20),
-                //       boxShadow: [
-                //         BoxShadow(
-                //           color: Colors.black.withOpacity(0.2),
-                //           blurRadius: 4,
-                //           offset: const Offset(0, 2),
-                //         ),
-                //       ],
-                //     ),
-                //     child: Text(
-                //       recipe.category,
-                //       style: const TextStyle(
-                //         color: Colors.white,
-                //         fontSize: 12,
-                //         fontWeight: FontWeight.w600,
-                //       ),
-                //     ),
-                //   ),
-                // ),
               ],
             ),
             Padding(
@@ -159,18 +126,21 @@ class RecipeCard extends StatelessWidget {
                   const SizedBox(height: 4),
                   Row(
                     children: [
-                      Icon(Icons.restaurant_menu, size: 14, color: Colors.grey[600]),
+                      Icon(Icons.restaurant_menu,
+                          size: 14, color: Colors.grey[600]),
                       const SizedBox(width: 4),
                       Text(
                         recipe.area,
-                        style: TextStyle(color: Colors.grey[600], fontSize: 12),
+                        style:
+                            TextStyle(color: Colors.grey[600], fontSize: 12),
                       ),
                       const SizedBox(width: 12),
                       Icon(Icons.category, size: 14, color: Colors.grey[600]),
                       const SizedBox(width: 4),
                       Text(
                         '${recipe.ingredients.length} ingredients',
-                        style: TextStyle(color: Colors.grey[600], fontSize: 12),
+                        style:
+                            TextStyle(color: Colors.grey[600], fontSize: 12),
                       ),
                     ],
                   ),

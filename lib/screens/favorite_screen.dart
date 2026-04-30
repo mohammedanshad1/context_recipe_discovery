@@ -31,7 +31,6 @@ class _FavoritesScreenState extends State<FavoritesScreen> {
       _error = null;
     });
     try {
-      // Read directly from local storage — does NOT touch the shared RecipeBloc
       final localStorage = context.read<LocalStorageService>();
       final favMap = await localStorage.getFavorites();
       if (mounted) {
@@ -55,11 +54,7 @@ class _FavoritesScreenState extends State<FavoritesScreen> {
       final localStorage = context.read<LocalStorageService>();
       await localStorage.removeFavorite(recipe.id);
 
-      // Also sync with the shared bloc so home screen stays consistent
-      if (mounted) {
-        context.read<RecipeBloc>().add(ToggleFavorite(recipe));
-      }
-
+      // Instantly remove from local list
       setState(() {
         _favorites.removeWhere((r) => r.id == recipe.id);
       });
@@ -74,12 +69,21 @@ class _FavoritesScreenState extends State<FavoritesScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('My Favorites'),
-        elevation: 0,
+    // BlocListener watches for ToggleFavorite changes fired by RecipeCard's heart button
+    return BlocListener<RecipeBloc, RecipeState>(
+      listenWhen: (previous, current) =>
+          current is RecipeLoaded || current is RecipeDetailsLoaded,
+      listener: (context, state) {
+        // Re-sync local list whenever bloc state changes (e.g. heart tapped in card)
+        _loadFavorites();
+      },
+      child: Scaffold(
+        appBar: AppBar(
+          title: const Text('My Favorites'),
+          elevation: 0,
+        ),
+        body: _buildBody(),
       ),
-      body: _buildBody(),
     );
   }
 
@@ -133,18 +137,35 @@ class _FavoritesScreenState extends State<FavoritesScreen> {
         itemCount: _favorites.length,
         itemBuilder: (context, index) {
           final recipe = _favorites[index];
-          return RecipeCard(
-            recipe: recipe.copyWith(isFavorite: true),
-            onTap: () async {
-              await Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => RecipeDetailScreen(recipe: recipe),
-                ),
-              );
-              // Reload in case user un-favorited from detail screen
-              if (mounted) _loadFavorites();
+          return Dismissible(
+            key: Key(recipe.id),
+            direction: DismissDirection.endToStart,
+            confirmDismiss: (_) async {
+              await _removeFavorite(recipe);
+              return false; // we handle removal manually via setState
             },
+            background: Container(
+              alignment: Alignment.centerRight,
+              padding: const EdgeInsets.only(right: 20),
+              decoration: BoxDecoration(
+                color: Colors.red[400],
+                borderRadius: BorderRadius.circular(12),
+              ),
+              child: const Icon(Icons.delete_outline,
+                  color: Colors.white, size: 28),
+            ),
+            child: RecipeCard(
+              recipe: recipe.copyWith(isFavorite: true),
+              onTap: () async {
+                await Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => RecipeDetailScreen(recipe: recipe),
+                  ),
+                );
+                if (mounted) _loadFavorites();
+              },
+            ),
           );
         },
       ),
